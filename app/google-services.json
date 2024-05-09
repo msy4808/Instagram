@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "775694229109",
+    "project_id": "instagram-moon-777b1",
+    "storage_bucket": "instagram-moon-777b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:775694229109:android:66be58ffc5f050fffc623c",
+        "android_client_info": {
+          "package_name": "com.moon.instagram"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsBPc7Gtg37_M6KIZ-a44uG_W9J4wtKe8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
