@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.moon.instagram.databinding.ActivityLoginBinding
@@ -12,6 +14,7 @@ import com.moon.instagram.databinding.ActivityLoginBinding
 class LoginActivity : AppCompatActivity() {
     private lateinit var mBinding: ActivityLoginBinding
     var auth: FirebaseAuth? = null
+    var googleSignInClient: GoogleSignInClient? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -21,6 +24,10 @@ class LoginActivity : AppCompatActivity() {
         mBinding.emailLoginBtn.setOnClickListener {
             signinAndSignup()
         }
+//        var googleSignOption = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//            .requestIdToken(getString(R.string.default_web_client_id))
+//            .requestEmail()
+//            .build()
     }
 
     private fun signinAndSignup() {
