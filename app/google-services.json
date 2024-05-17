@@ -12,7 +12,20 @@
           "package_name": "com.moon.instagram"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "775694229109-3j0pu6qjkk4f5ar2dmbproirjudlvs7q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moon.instagram",
+            "certificate_hash": "7c2880d846b4439f831454fc51f130aa1ae7da7c"
+          }
+        },
+        {
+          "client_id": "775694229109-p7n3l5rruujb48fcpa0v8gtbaari0vgv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBsBPc7Gtg37_M6KIZ-a44uG_W9J4wtKe8"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "775694229109-p7n3l5rruujb48fcpa0v8gtbaari0vgv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
