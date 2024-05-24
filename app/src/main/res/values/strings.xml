@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Howlstagram</string>
-    <string name="facebook_app_id">397161661812167</string>
-    <string name="fb_login_protocol_scheme">fb397161661812167</string>
-
+    <string name="facebook_app_id">1155073455536744</string>
+    <string name="fb_login_protocol_scheme">fb1155073455536744</string>
+    <string name="facebook_client_token">7429b1814660948653332ceaa3ed8780</string>
 
     <!-- Sign In -->
     <string name="email">Email</string>
