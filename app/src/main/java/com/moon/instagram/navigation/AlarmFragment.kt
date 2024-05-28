@@ -1,0 +1,15 @@
+package com.moon.instagram.navigation
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.moon.instagram.databinding.FragmentAlarmBinding
+
+class AlarmFragment: Fragment() {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val mBinding = FragmentAlarmBinding.inflate(layoutInflater,container,false)
+        return mBinding.root
+    }
+}
