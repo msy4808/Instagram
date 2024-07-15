@@ -50,6 +50,7 @@ dependencies {
     implementation("com.android.support:design:28.0.0")
     implementation("com.google.firebase:firebase-auth:23.0.0")
     implementation("com.google.firebase:firebase-storage:21.0.0")
+    implementation("com.google.firebase:firebase-firestore:25.0.0")
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
     implementation("com.google.android.gms:play-services-auth:21.1.1")
     implementation("com.google.firebase:firebase-analytics")
