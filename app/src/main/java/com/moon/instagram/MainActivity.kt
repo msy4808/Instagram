@@ -25,6 +25,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(mBinding.root)
         initPermissions()
         initViews()
+
+        //Set default screen
+        mBinding.bottomNavigation.selectedItemId = R.id.action_home
     }
 
     private fun initViews() {
