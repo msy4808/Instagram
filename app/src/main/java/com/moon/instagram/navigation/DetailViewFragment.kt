@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.moon.instagram.R
 import com.moon.instagram.databinding.FragmentDetailBinding
@@ -16,6 +18,8 @@ import com.moon.instagram.navigation.model.ContentDTO
 
 class DetailViewFragment: Fragment() {
     lateinit var firestore: FirebaseFirestore
+    val uid = FirebaseAuth.getInstance().currentUser?.uid
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val mBinding = FragmentDetailBinding.inflate(layoutInflater,container,false)
         firestore = FirebaseFirestore.getInstance()
@@ -69,6 +73,37 @@ class DetailViewFragment: Fragment() {
             //ProfileImage
             Glide.with(holder.itemView.context).load(contentDTOs[position].imageUrl).into(holder.itemView.findViewById(R.id.item_profile_image))
 
+            //This code is when the button is clicked
+            holder.itemView.findViewById<ImageView>(R.id.item_favorite_image).setOnClickListener {
+                favoriteEvent(position)
+            }
+
+            //This code is when the page is loaded
+            if(contentDTOs[position].favorites.containsKey(uid)) {
+                //This is like status
+                holder.itemView.findViewById<ImageView>(R.id.item_favorite_image).setImageResource(R.drawable.ic_favorite)
+            } else {
+                //This is unlike status
+                holder.itemView.findViewById<ImageView>(R.id.item_favorite_image).setImageResource(R.drawable.ic_favorite_border)
+            }
+        }
+
+        private fun favoriteEvent(position: Int) {
+            val tsDoc = firestore.collection("images").document(contentUidList[position])
+            firestore.runTransaction {
+                val contentDTO = it.get(tsDoc).toObject(ContentDTO::class.java)
+
+                if(contentDTO?.favorites?.containsKey(uid) == true) {
+                    //When the button is clicked
+                    contentDTO.favoriteCount = contentDTO.favoriteCount - 1
+                    contentDTO.favorites.remove(uid)
+                } else {
+                    //When the button is not clicked
+                    contentDTO?.favoriteCount = contentDTO?.favoriteCount?.plus(1)!!
+                    contentDTO.favorites.set(uid!!, true)
+                }
+                it.set(tsDoc, contentDTO)
+            }
         }
 
         inner class CustomViewHolder(view: View) : RecyclerView.ViewHolder(view)
