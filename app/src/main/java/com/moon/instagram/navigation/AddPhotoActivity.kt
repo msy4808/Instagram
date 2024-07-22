@@ -110,8 +110,8 @@ class AddPhotoActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == PICK_IMAGE_FROM_ALBUM) {
-            if(resultCode == RESULT_OK) {
+        if (requestCode == PICK_IMAGE_FROM_ALBUM) {
+            if (resultCode == RESULT_OK) {
                 //This is path to the selected image
                 photoUri = data?.data
                 mBinding.addPhotoImage.setImageURI(photoUri)

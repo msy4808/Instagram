@@ -16,12 +16,12 @@ import com.moon.instagram.R
 import com.moon.instagram.databinding.FragmentDetailBinding
 import com.moon.instagram.navigation.model.ContentDTO
 
-class DetailViewFragment: Fragment() {
+class DetailViewFragment : Fragment() {
     lateinit var firestore: FirebaseFirestore
     val uid = FirebaseAuth.getInstance().currentUser?.uid
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val mBinding = FragmentDetailBinding.inflate(layoutInflater,container,false)
+        val mBinding = FragmentDetailBinding.inflate(layoutInflater, container, false)
         firestore = FirebaseFirestore.getInstance()
 
         mBinding.let {
@@ -31,22 +31,24 @@ class DetailViewFragment: Fragment() {
 
         return mBinding.root
     }
-    inner class DetailViewRecyclerViewAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    inner class DetailViewRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val contentDTOs: ArrayList<ContentDTO> = arrayListOf()
         val contentUidList: ArrayList<String> = arrayListOf()
 
         init {
             firestore.collection("images").orderBy("timeStamp").addSnapshotListener { value, error ->
-                contentDTOs.clear()
-                contentUidList.clear()
-                for(snapshot in value!!.documents) {
-                    val item = snapshot.toObject(ContentDTO::class.java)
-                    contentDTOs.add(item!!)
-                    contentUidList.add(snapshot.id)
+                    contentDTOs.clear()
+                    contentUidList.clear()
+                    for (snapshot in value!!.documents) {
+                        val item = snapshot.toObject(ContentDTO::class.java)
+                        contentDTOs.add(item!!)
+                        contentUidList.add(snapshot.id)
+                    }
+                    notifyDataSetChanged()
                 }
-                notifyDataSetChanged()
-            }
         }
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.item_detail, parent, false)
             return CustomViewHolder(view)
@@ -79,7 +81,7 @@ class DetailViewFragment: Fragment() {
             }
 
             //This code is when the page is loaded
-            if(contentDTOs[position].favorites.containsKey(uid)) {
+            if (contentDTOs[position].favorites.containsKey(uid)) {
                 //This is like status
                 holder.itemView.findViewById<ImageView>(R.id.item_favorite_image).setImageResource(R.drawable.ic_favorite)
             } else {
@@ -93,7 +95,7 @@ class DetailViewFragment: Fragment() {
             firestore.runTransaction {
                 val contentDTO = it.get(tsDoc).toObject(ContentDTO::class.java)
 
-                if(contentDTO?.favorites?.containsKey(uid) == true) {
+                if (contentDTO?.favorites?.containsKey(uid) == true) {
                     //When the button is clicked
                     contentDTO.favoriteCount = contentDTO.favoriteCount - 1
                     contentDTO.favorites.remove(uid)
@@ -106,6 +108,6 @@ class DetailViewFragment: Fragment() {
             }
         }
 
-        inner class CustomViewHolder(view: View) : RecyclerView.ViewHolder(view)
+        private inner class CustomViewHolder(view: View) : RecyclerView.ViewHolder(view)
     }
 }

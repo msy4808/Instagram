@@ -55,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        var googleSignOption = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        val googleSignOption = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
@@ -65,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun googleLogin() {
-        var signInIntent = googleSignInClient?.signInIntent
+        val signInIntent = googleSignInClient?.signInIntent
 
         if (signInIntent != null) {
             startActivityForResult(signInIntent, GOOGLE_LOGIN_CODE)
@@ -87,11 +87,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun handleFacebookAccessToken(token: AccessToken) {
-        var credential = FacebookAuthProvider.getCredential(token.token)
+        val credential = FacebookAuthProvider.getCredential(token.token)
         auth?.signInWithCredential(credential)
             ?.addOnCompleteListener {
                     task ->
-                if(task.isSuccessful) {
+                if (task.isSuccessful) {
                     //Login
                     moveMainPage(task.result.user)
                 } else {
@@ -103,10 +103,7 @@ class LoginActivity : AppCompatActivity() {
 
     fun printHashKey() {
         try {
-            val info = packageManager.getPackageInfo(
-                packageName,
-                PackageManager.GET_SIGNATURES
-            )
+            val info = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
             for (signature in info.signatures) {
                 val md = MessageDigest.getInstance("SHA")
                 md.update(signature.toByteArray())
@@ -126,7 +123,7 @@ class LoginActivity : AppCompatActivity() {
             mBinding.passwordEditText.text.toString()
         )?.addOnCompleteListener {
             task ->
-            if(task.isSuccessful) {
+            if (task.isSuccessful) {
                 //Creating a user account
                 moveMainPage(task.result.user)
             } else if(!task.exception?.message.isNullOrEmpty()) {
@@ -144,7 +141,7 @@ class LoginActivity : AppCompatActivity() {
             mBinding.passwordEditText.text.toString()
         )?.addOnCompleteListener {
                 task ->
-            if(task.isSuccessful) {
+            if (task.isSuccessful) {
                 //Login
                 moveMainPage(task.result.user)
             } else {
@@ -155,17 +152,17 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun moveMainPage(user: FirebaseUser?) {
-        if(user != null) {
+        if (user != null) {
             startActivity(Intent(this, MainActivity::class.java))
         }
     }
 
     private fun fireBaseAuthWithGoogle(account: GoogleSignInAccount?) {
-        var credential = GoogleAuthProvider.getCredential(account?.idToken, null)
+        val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
         auth?.signInWithCredential(credential)
             ?.addOnCompleteListener {
                     task ->
-                if(task.isSuccessful) {
+                if (task.isSuccessful) {
                     //Login
                     moveMainPage(task.result.user)
                 } else {
@@ -178,7 +175,7 @@ class LoginActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         callbackManager?.onActivityResult(requestCode, resultCode, data)
         if (requestCode == GOOGLE_LOGIN_CODE) {
-            var result = data?.let { Auth.GoogleSignInApi.getSignInResultFromIntent(it) }
+            val result = data?.let { Auth.GoogleSignInApi.getSignInResultFromIntent(it) }
 
             if (result != null) {
                 if (result.isSuccess) {
