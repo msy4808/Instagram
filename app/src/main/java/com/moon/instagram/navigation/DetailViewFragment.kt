@@ -81,7 +81,7 @@ class DetailViewFragment : Fragment() {
             }
 
             //This code is when the page is loaded
-            if (contentDTOs[position].favorites.containsKey(uid)) {
+            if(contentDTOs[position].favorites.containsKey(uid)) {
                 //This is like status
                 holder.itemView.findViewById<ImageView>(R.id.item_favorite_image).setImageResource(R.drawable.ic_favorite)
             } else {
