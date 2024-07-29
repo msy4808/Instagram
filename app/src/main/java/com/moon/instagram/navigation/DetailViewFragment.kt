@@ -40,6 +40,8 @@ class DetailViewFragment : Fragment() {
             firestore.collection("images").orderBy("timeStamp").addSnapshotListener { value, error ->
                     contentDTOs.clear()
                     contentUidList.clear()
+                //Sometimes, This code return null of querySnapshot when it signout
+                if (value == null) return@addSnapshotListener
                     for (snapshot in value!!.documents) {
                         val item = snapshot.toObject(ContentDTO::class.java)
                         contentDTOs.add(item!!)
@@ -87,6 +89,16 @@ class DetailViewFragment : Fragment() {
             } else {
                 //This is unlike status
                 holder.itemView.findViewById<ImageView>(R.id.item_favorite_image).setImageResource(R.drawable.ic_favorite_border)
+            }
+
+            //This code is when the profile image is clicked
+            holder.itemView.findViewById<ImageView>(R.id.item_profile_image).setOnClickListener {
+                val fragment = UserFragment()
+                val bundle = Bundle()
+                bundle.putString("destinationUid", contentDTOs[position].uid)
+                bundle.putString("userId", contentDTOs[position].userId)
+                fragment.arguments = bundle
+                activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.main_content, fragment)?.commit()
             }
         }
 

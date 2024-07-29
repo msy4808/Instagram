@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -18,7 +19,7 @@ import com.moon.instagram.navigation.GridFragment
 import com.moon.instagram.navigation.UserFragment
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var mBinding: ActivityMainBinding
+    lateinit var mBinding: ActivityMainBinding
     private val REQUEST_CODE_PERMISSIONS = 1004
     override fun onCreate(savedInstanceState: Bundle?) {
         mBinding = ActivityMainBinding.inflate(layoutInflater)
@@ -34,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     private fun initViews() {
         mBinding.run {
             bottomNavigation.setOnItemSelectedListener { item ->
+                setToolbarDefault()
                 when (item.itemId) {
                     R.id.action_home -> {
                         val fragment = DetailViewFragment()
@@ -82,6 +84,12 @@ class MainActivity : AppCompatActivity() {
                 return@setOnItemSelectedListener false
             }
         }
+    }
+
+    private fun setToolbarDefault() {
+        mBinding.toolbarUserName.visibility = View.GONE
+        mBinding.toolbarBackBtn.visibility = View.GONE
+        mBinding.toolbarTitleImage.visibility = View.VISIBLE
     }
 
     private fun initPermissions() {
