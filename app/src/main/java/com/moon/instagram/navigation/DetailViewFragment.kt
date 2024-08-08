@@ -1,5 +1,6 @@
 package com.moon.instagram.navigation
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -42,7 +43,7 @@ class DetailViewFragment : Fragment() {
                     contentUidList.clear()
                 //Sometimes, This code return null of querySnapshot when it signout
                 if (value == null) return@addSnapshotListener
-                    for (snapshot in value!!.documents) {
+                    for (snapshot in value.documents) {
                         val item = snapshot.toObject(ContentDTO::class.java)
                         contentDTOs.add(item!!)
                         contentUidList.add(snapshot.id)
@@ -99,6 +100,11 @@ class DetailViewFragment : Fragment() {
                 bundle.putString("userId", contentDTOs[position].userId)
                 fragment.arguments = bundle
                 activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.main_content, fragment)?.commit()
+            }
+            holder.itemView.findViewById<ImageView>(R.id.item_comment_image).setOnClickListener {
+                val intent = Intent(it.context, CommentActivity::class.java)
+                intent.putExtra("contentUid", contentUidList[position])
+                startActivity(intent)
             }
         }
 
