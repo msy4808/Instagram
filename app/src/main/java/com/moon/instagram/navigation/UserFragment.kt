@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +31,6 @@ class UserFragment: Fragment() {
     lateinit var uid: String
     lateinit var auth: FirebaseAuth
     lateinit var currentUserUid: String
-    lateinit var mContext: Context
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentUserBinding.inflate(layoutInflater,container,false)
@@ -40,7 +40,7 @@ class UserFragment: Fragment() {
         currentUserUid = auth.currentUser?.uid ?: ""
         if (uid == currentUserUid) {
             //MyPage
-            mBinding.accountBtnFollowSignOut.text = getString(R.string.signout)
+            mBinding.accountBtnFollowSignOut.text = activity?.getString(R.string.signout)
             mBinding.accountBtnFollowSignOut.setOnClickListener {
                 activity?.finish()
                 startActivity(Intent(activity, LoginActivity::class.java))
@@ -48,7 +48,7 @@ class UserFragment: Fragment() {
             }
         } else {
             //OtherUserPage
-            mBinding.accountBtnFollowSignOut.text = getString(R.string.follow)
+            mBinding.accountBtnFollowSignOut.text = activity?.getString(R.string.follow)
             val mainActivity = activity as MainActivity
             mainActivity.mBinding.toolbarUserName.text = arguments?.getString("userId")
             mainActivity.mBinding.toolbarBackBtn.setOnClickListener {
@@ -141,23 +141,34 @@ class UserFragment: Fragment() {
 
     private fun getFollowerAndFollowing() {
         firestore.collection("users").document(uid).addSnapshotListener { value, error ->
-            if (value == null) return@addSnapshotListener
-            var followDTO = value.toObject(FollowDTO::class.java)
+            if (isAdded) {
+                Log.d("Follow Button Success", isAdded.toString())
+                if (value == null) return@addSnapshotListener
+                var followDTO = value.toObject(FollowDTO::class.java)
 
-            if (followDTO?.followingCount != null) {
-                mBinding.accountTvFollowingCount.text = followDTO.followingCount.toString()
-            }
-            if (followDTO?.followerCount != null) {
-                mBinding.accountTvFollowerCount.text = followDTO.followerCount.toString()
-                if (followDTO.followers.containsKey(currentUserUid)) {
-                    mBinding.accountBtnFollowSignOut.text = getString(R.string.follow_cancel)
-                    mBinding.accountBtnFollowSignOut.background.colorFilter = PorterDuffColorFilter(resources.getColor(R.color.colorLightGray), PorterDuff.Mode.MULTIPLY)
-                } else {
-                    if (uid != currentUserUid) {
-                        mBinding.accountBtnFollowSignOut.text = getString(R.string.follow)
-                        mBinding.accountBtnFollowSignOut.background.colorFilter = null
+                if (followDTO?.followingCount != null) {
+                    mBinding.accountTvFollowingCount.text = followDTO.followingCount.toString()
+                }
+                if (followDTO?.followerCount != null) {
+                    mBinding.accountTvFollowerCount.text = followDTO.followerCount.toString()
+                    if (followDTO.followers.containsKey(currentUserUid)) {
+                        mBinding.accountBtnFollowSignOut.text =
+                            activity?.getString(R.string.follow_cancel)
+                        mBinding.accountBtnFollowSignOut.background.colorFilter =
+                            PorterDuffColorFilter(
+                                resources.getColor(R.color.colorLightGray),
+                                PorterDuff.Mode.MULTIPLY
+                            )
+                    } else {
+                        if (uid != currentUserUid) {
+                            mBinding.accountBtnFollowSignOut.text =
+                                activity?.getString(R.string.follow)
+                            mBinding.accountBtnFollowSignOut.background.colorFilter = null
+                        }
                     }
                 }
+            } else {
+                Log.d("Follow Button Error", isAdded.toString())
             }
         }
     }
@@ -196,11 +207,6 @@ class UserFragment: Fragment() {
         override fun getItemCount(): Int {
             return contentDTOs.size
         }
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mContext = context
     }
 
     companion object {
