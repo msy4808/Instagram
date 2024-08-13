@@ -1,12 +1,19 @@
 package com.moon.instagram.navigation
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.moon.instagram.R
@@ -22,6 +29,8 @@ class CommentActivity : AppCompatActivity() {
         mBinding = ActivityCommentBinding.inflate(layoutInflater)
         firebaseAuth = FirebaseAuth.getInstance()
         contentUid = intent.getStringExtra("contentUid") ?: ""
+        mBinding.commentRecyclerview.adapter = CommentRecyclerviewAdapter()
+        mBinding.commentRecyclerview.layoutManager = LinearLayoutManager(this)
         setContentView(mBinding.root)
 
         mBinding.commentBtnSend.setOnClickListener {
@@ -42,23 +51,40 @@ class CommentActivity : AppCompatActivity() {
 
         init {
             FirebaseFirestore.getInstance().collection("images").document(contentUid)
-                .collection("comments").orderBy("timestamp")
+                .collection("comments").orderBy("timeStamp")
                 .addSnapshotListener { value, error ->
                     comments.clear()
                     if (value == null) return@addSnapshotListener
+
+                    for (snapshot in value.documents) {
+                        snapshot.toObject(ContentDTO.Comment::class.java)?.let { comments.add(it) }
+                    }
+                    notifyDataSetChanged()
                 }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            TODO("Not yet implemented")
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_comment, parent, false)
+            return CustomViewHolder(view)
         }
 
+        private inner class CustomViewHolder(view: View): RecyclerView.ViewHolder(view)
+
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-            TODO("Not yet implemented")
+            val view = holder.itemView
+            view.findViewById<TextView>(R.id.comment_view_item_text_comment).text = comments[position].comment
+            view.findViewById<TextView>(R.id.comment_view_item_textview_profile).text = comments[position].userId
+            FirebaseFirestore.getInstance().collection("profileImages").document(comments[position].uid).get().addOnCompleteListener {
+                if (it.isSuccessful) {
+                    val url = it.result["image"]
+                    Glide.with(view.context).load(url).apply(RequestOptions().circleCrop()).into(view.findViewById<ImageView>(R.id.comment_view_item_profile))
+                }
+            }
+
         }
 
         override fun getItemCount(): Int {
-            TODO("Not yet implemented")
+            return comments.size
         }
     }
 }
