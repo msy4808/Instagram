@@ -18,17 +18,20 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.moon.instagram.R
 import com.moon.instagram.databinding.ActivityCommentBinding
+import com.moon.instagram.navigation.model.AlarmDTO
 import com.moon.instagram.navigation.model.ContentDTO
 
 class CommentActivity : AppCompatActivity() {
     lateinit var mBinding: ActivityCommentBinding
     lateinit var firebaseAuth: FirebaseAuth
     var contentUid: String = ""
+    var destinationUid: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityCommentBinding.inflate(layoutInflater)
         firebaseAuth = FirebaseAuth.getInstance()
         contentUid = intent.getStringExtra("contentUid") ?: ""
+        destinationUid = intent.getStringExtra("destinationUid") ?: ""
         mBinding.commentRecyclerview.adapter = CommentRecyclerviewAdapter()
         mBinding.commentRecyclerview.layoutManager = LinearLayoutManager(this)
         setContentView(mBinding.root)
@@ -42,8 +45,20 @@ class CommentActivity : AppCompatActivity() {
 
             FirebaseFirestore.getInstance().collection("images").document(contentUid)
                 .collection("comments").document().set(comment)
+            commentAlarm(destinationUid, mBinding.commentEditMessage.text.toString())
             mBinding.commentEditMessage.setText(null)
         }
+    }
+
+    private fun commentAlarm(destinationUid: String, message: String) {
+        val alarmDTO = AlarmDTO()
+        alarmDTO.destinationUid = destinationUid
+        FirebaseAuth.getInstance().currentUser?.email.let { if (it != null) { alarmDTO.userId = it } }
+        FirebaseAuth.getInstance().currentUser?.uid.let { if (it != null) { alarmDTO.uid = it } }
+        alarmDTO.timeStamp = System.currentTimeMillis()
+        alarmDTO.message = message
+        FirebaseFirestore.getInstance().collection("alarms").document().set(alarmDTO)
+
     }
 
     inner class CommentRecyclerviewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

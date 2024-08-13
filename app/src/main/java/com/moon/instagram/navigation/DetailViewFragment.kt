@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.moon.instagram.R
 import com.moon.instagram.databinding.FragmentDetailBinding
+import com.moon.instagram.navigation.model.AlarmDTO
 import com.moon.instagram.navigation.model.ContentDTO
 
 class DetailViewFragment : Fragment() {
@@ -104,6 +105,7 @@ class DetailViewFragment : Fragment() {
             holder.itemView.findViewById<ImageView>(R.id.item_comment_image).setOnClickListener {
                 val intent = Intent(it.context, CommentActivity::class.java)
                 intent.putExtra("contentUid", contentUidList[position])
+                intent.putExtra("destinationUid", contentDTOs[position].uid)
                 startActivity(intent)
             }
         }
@@ -121,9 +123,20 @@ class DetailViewFragment : Fragment() {
                     //When the button is not clicked
                     contentDTO?.favoriteCount = contentDTO?.favoriteCount?.plus(1)!!
                     contentDTO.favorites.set(uid!!, true)
+                    favoriteAlarm(contentDTOs[position].uid)
                 }
                 it.set(tsDoc, contentDTO)
             }
+        }
+
+        private fun favoriteAlarm(destinationUid: String) {
+            val alarmDTO = AlarmDTO()
+            alarmDTO.destinationUid = destinationUid
+            FirebaseAuth.getInstance().currentUser?.email.let { if (it != null) { alarmDTO.userId = it } }
+            FirebaseAuth.getInstance().currentUser?.uid.let { if (it != null) { alarmDTO.uid = it } }
+            alarmDTO.kind = 0
+            alarmDTO.timeStamp = System.currentTimeMillis()
+            FirebaseFirestore.getInstance().collection("alarms").document().set(alarmDTO)
         }
 
         private inner class CustomViewHolder(view: View) : RecyclerView.ViewHolder(view)

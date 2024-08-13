@@ -22,6 +22,7 @@ import com.moon.instagram.LoginActivity
 import com.moon.instagram.MainActivity
 import com.moon.instagram.R
 import com.moon.instagram.databinding.FragmentUserBinding
+import com.moon.instagram.navigation.model.AlarmDTO
 import com.moon.instagram.navigation.model.ContentDTO
 import com.moon.instagram.navigation.model.FollowDTO
 
@@ -120,6 +121,7 @@ class UserFragment: Fragment() {
                 followerDTO = FollowDTO()
                 followerDTO.followerCount = 1
                 followerDTO.followers[currentUserUid] = true
+                followerAlarm(uid)
 
                 it.set(tsDocFollower, followerDTO)
                 return@runTransaction
@@ -133,6 +135,7 @@ class UserFragment: Fragment() {
                 //It add my follower when I don't follow a third person
                 followerDTO.followerCount += 1
                 followerDTO.followers[currentUserUid] = true
+                followerAlarm(uid)
             }
             it.set(tsDocFollower, followerDTO)
             return@runTransaction
@@ -171,6 +174,16 @@ class UserFragment: Fragment() {
                 Log.d("Follow Button Error", isAdded.toString())
             }
         }
+    }
+
+    private fun followerAlarm(destinationUid: String) {
+        val alarmDTO = AlarmDTO()
+        alarmDTO.destinationUid = destinationUid
+        alarmDTO.userId = auth.currentUser?.email ?: ""
+        alarmDTO.uid = auth.currentUser?.uid ?: ""
+        alarmDTO.kind = 2
+        alarmDTO.timeStamp = System.currentTimeMillis()
+        FirebaseFirestore.getInstance().collection("alarms").document().set(alarmDTO)
     }
 
     inner class UserFragmentRecycleViewAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
