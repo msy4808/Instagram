@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "775694229109",
+    "firebase_url": "https://instagram-moon-777b1-default-rtdb.firebaseio.com",
     "project_id": "instagram-moon-777b1",
     "storage_bucket": "instagram-moon-777b1.appspot.com"
   },
@@ -19,6 +20,14 @@
           "android_info": {
             "package_name": "com.moon.instagram",
             "certificate_hash": "7c2880d846b4439f831454fc51f130aa1ae7da7c"
+          }
+        },
+        {
+          "client_id": "775694229109-51oh037499m2hof41fmvl4ot3hjb5qro.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moon.instagram",
+            "certificate_hash": "7beeb9a3e22c308ac68d30c55a118f0464140987"
           }
         },
         {
